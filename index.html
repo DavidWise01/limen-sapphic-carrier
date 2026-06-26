@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIMEN · the Sapphic Carrier — send a message on rhythm + light</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Spectral:ital,wght@0,300;0,400;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sea:#170d20; --sea2:#1f1330; --sea3:#271838;
+    --lead:#9a98a6; --lead-dim:#5b5868; --line:rgba(154,152,166,.16);
+    --parch:#e9e2d2; --parch-dim:#b9b2a3;
+    --gold:#d9a441; --gold-dim:#a87f33; --verd:#73b3a3; --murex:#9a3d68;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:var(--sea);color:var(--parch);
+    font-family:"Spectral",Georgia,serif;line-height:1.6;-webkit-font-smoothing:antialiased;
+    background-image:
+      radial-gradient(1000px 520px at 82% -10%, rgba(154,61,104,.16), transparent 60%),
+      radial-gradient(820px 640px at 5% 112%, rgba(115,179,163,.10), transparent 55%);
+    display:flex;justify-content:center}
+  .card{max-width:760px;width:100%;padding:34px 24px 56px}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.28em;
+    text-transform:uppercase;color:var(--gold-dim)}
+  h1{font-family:"Cormorant Garamond",serif;font-weight:300;font-size:clamp(34px,8vw,56px);
+    margin:8px 0 0;line-height:.98;letter-spacing:-.5px}
+  h1 .gk{display:block;font-size:.5em;color:var(--lead);letter-spacing:2px;margin-top:4px}
+  .sub{font-family:"Spectral",serif;font-style:italic;font-weight:300;color:var(--parch-dim);
+    font-size:16px;margin:14px 0 0;max-width:60ch}
+
+  .panel{margin-top:22px;border:1px solid var(--line);border-radius:7px;
+    background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(0,0,0,.16));padding:16px}
+  .lab{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--gold-dim);margin-bottom:9px}
+  textarea{width:100%;min-height:64px;resize:vertical;background:rgba(0,0,0,.25);color:var(--parch);
+    border:1px solid var(--line);border-radius:5px;padding:11px 12px;font-family:"Spectral",serif;
+    font-size:16px;line-height:1.5}
+  textarea:focus{outline:none;border-color:rgba(217,164,65,.5)}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+  button.tx{display:inline-flex;align-items:center;gap:9px;cursor:pointer;
+    background:linear-gradient(180deg,rgba(217,164,65,.18),rgba(217,164,65,.05));
+    border:1px solid rgba(217,164,65,.5);border-radius:5px;color:var(--parch);
+    padding:11px 18px;font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.06em;transition:.15s}
+  button.tx:hover{background:rgba(217,164,65,.16)}
+  button.tx:active{transform:translateY(1px)}
+  button.tx.busy{opacity:.5;pointer-events:none}
+  button.ghost{background:transparent;border:1px solid var(--line);color:var(--lead);
+    border-radius:5px;padding:11px 14px;font-family:"IBM Plex Mono",monospace;font-size:12px;cursor:pointer}
+  button.ghost:hover{border-color:rgba(154,152,166,.4);color:var(--parch)}
+  label.tempo{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--lead);letter-spacing:.06em}
+  label.tempo input{vertical-align:middle;width:120px;accent-color:var(--gold)}
+
+  .limenline{margin-top:13px;font-family:"IBM Plex Mono",monospace;font-size:18px;line-height:1.9;
+    color:var(--parch);word-break:break-word;min-height:26px}
+  .limenline .w{padding:1px 2px;border-radius:3px}
+  .limenline .w.lit{background:rgba(217,164,65,.22);box-shadow:0 0 10px rgba(217,164,65,.3)}
+
+  .stave{font-family:"IBM Plex Mono",monospace;font-size:14px;letter-spacing:.18em;color:var(--lead);
+    margin-top:8px;min-height:20px}
+  .stave .syl{opacity:.4}.stave .syl.on{opacity:1;color:var(--verd)}
+
+  #optic{display:block;width:100%;height:230px;border-radius:6px;margin-top:4px;background:#0d0716}
+
+  .rx{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+  .rx .head{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--verd);margin-bottom:7px}
+  .rx .crossing{font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.75;
+    color:var(--parch-dim);display:flex;gap:9px;flex-wrap:wrap;align-items:baseline}
+  .rx .crossing .gl{font-size:15px;color:var(--parch)}
+  .rx .crossing .ok{color:var(--verd)}.rx .crossing .bad{color:var(--murex)}
+  .rx .crossing .wl{font-size:10px;opacity:.7}
+  .rx .empty{color:var(--lead-dim);font-style:italic;font-family:"Spectral",serif}
+
+  .note{margin-top:26px;border-top:1px solid var(--line);padding-top:16px;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;line-height:1.85;color:var(--lead-dim);letter-spacing:.02em}
+  .note b{color:var(--gold-dim);font-weight:500}
+  .legend{display:flex;flex-wrap:wrap;gap:13px;margin-top:10px;font-family:"IBM Plex Mono",monospace;
+    font-size:10.5px;color:var(--lead)}
+  .legend .g{display:inline-flex;align-items:center;gap:6px}
+  .legend .sw{width:11px;height:11px;border-radius:50%;display:inline-block}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="eyebrow">a purple-paper signalling card · ROOT0 / LIMEN</div>
+  <h1>The Sapphic Carrier<span class="gk">LIMEN · ἦχοι Λέσβου · gate-crossings on rhythm &amp; light</span></h1>
+  <p class="sub">LIMEN sends <i>witnessed gate-crossings</i> carried on PULSE. Here the <b>carrier is the Sapphic metre itself</b> — the fixed long–short rhythm of Sappho's stanza is the clock (music, not data, exactly as LIMEN intends). Your message rides it as the <b>data</b>: each word becomes a crossing — a gate (pitch) and a direction (rise/fall) — plucked on a lyre in the rhythm, and the same bits are flung down an <b>optical carrier</b> as light pulses, one colour per gate (WDM, as fibre really does). Type, transmit, and watch the far end decode it.</p>
+
+  <div class="panel">
+    <div class="lab">the message</div>
+    <textarea id="msg" spellcheck="false">carry this across the dark from root0 to lesbos</textarea>
+    <div class="row">
+      <button class="tx" id="send"><span>▶</span> transmit on the Sapphic carrier</button>
+      <button class="ghost" id="clear">clear</button>
+      <label class="tempo">tempo <input id="tempo" type="range" min="80" max="220" value="150"></label>
+    </div>
+    <div class="lab" style="margin-top:16px">the LIMEN line · ⟨direction⟩⟨gate⟩«witness»</div>
+    <div class="limenline" id="line"></div>
+    <div class="stave" id="stave"></div>
+  </div>
+
+  <div class="panel">
+    <div class="lab">the optical carrier · light down the fibre · OOK · one colour per gate (WDM)</div>
+    <canvas id="optic"></canvas>
+    <div class="legend" id="legend"></div>
+    <div class="rx">
+      <div class="head">▤ the far end · what LIMEN reconstructs (heard gate+direction vs sent = checksum)</div>
+      <div id="rxlog"><div class="empty">— nothing received yet. press transmit. —</div></div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>what's real here.</b> the rhythm is the genuine quantitative Sapphic metre (long ≈ twice a short; the hendecasyllable <i>– ‿ – × – ‿ ‿ – ‿ – –</i> ×3 + the adonean <i>– ‿ ‿ – –</i>). the optical layer is real networking physics: <b>on–off keying</b> (the simplest optical modulation, used in fibre) on a light carrier, and <b>WDM</b> — separate wavelengths/colours as separate channels. the plucked voice is a Karplus–Strong synthesis, generated live in your browser; nothing is downloaded.
+    <br><br><b>what's the system.</b> LIMEN, its gates (stile · airgap · veil · close · gap), the rise/fall law, the «witness», and the fixed <b>3-2-1-0 carrier</b> are ROOT0's own signalling language (canonical: github.com/DavidWise01/pulse). mapping a word→crossing and laying it on the Sapphic metre is this card's composition — a faithful render of LIMEN, not a claim that antiquity sent packets.
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  // ── LIMEN core, ported from limen.py (gates · directions · voice · bits) ──
+  var GATES = {
+    stile:  {glyph:"◐", id:0x1, frm:"observe", to:"act",      gate:"64.5",  tone:262, color:"#e2473b"},
+    gap:    {glyph:"◇", id:0x5, frm:"forward", to:"inverse",  gate:"64/65", tone:294, color:"#e2922b"},
+    airgap: {glyph:"⊘", id:0x2, frm:"TOPH",    to:"Patricia", gate:"128.5", tone:330, color:"#d9c33a"},
+    veil:   {glyph:"◑", id:0x3, frm:"compute", to:"product",  gate:"192.5", tone:392, color:"#3bd0a8"},
+    close:  {glyph:"⟳", id:0x4, frm:"wrap",    to:"closure",  gate:"256.5", tone:523, color:"#6a7cff"}
+  };
+  var GATE_KEYS=["stile","gap","airgap","veil","close"];
+  var DIRS={rise:{glyph:"↑",bit:1,law:"0→1 TOPH"}, fall:{glyph:"↓",bit:0,law:"1→0 Patricia"}};
+  var CARRIER_BITS="111011010000";   // the 3-2-1-0 carrier — music, fixed, not data
+
+  function voice(dir,gate){ var base=GATES[gate].tone, semis = dir==="rise"?[0,2,4]:[4,2,0];
+    return semis.map(function(s){ return +(base*Math.pow(2,s/12)).toFixed(2); }); }
+  function bits(dir,gate){ return CARRIER_BITS + ("000"+GATES[gate].id.toString(2)).slice(-4) + DIRS[dir].bit + "1"; }
+
+  // ── map a plaintext message → LIMEN crossings (deterministic) ──
+  function wordToCrossing(word,i){
+    var sum=0; for(var k=0;k<word.length;k++) sum+=word.charCodeAt(k);
+    var gate=GATE_KEYS[sum%5];
+    var dir=((sum+i)%2)?"rise":"fall";
+    return {dir:dir, gate:gate, witness:word};
+  }
+  function encode(msg){
+    var words=msg.trim().split(/\s+/).filter(Boolean);
+    return words.map(wordToCrossing);
+  }
+
+  // Agent-B recovery (from limen.py hear()): contour → direction, nearest tone → gate
+  function hear(freqs){ var f1=freqs[0], f3=freqs[freqs.length-1];
+    var dir = f1<f3 ? "rise":"fall"; var base = dir==="rise"?f1:f3;
+    var gate=GATE_KEYS[0], best=1e9;
+    GATE_KEYS.forEach(function(n){ var d=Math.abs(GATES[n].tone-base); if(d<best){best=d;gate=n;} });
+    return {dir:dir, gate:gate, base:+base.toFixed(2)};
+  }
+
+  // ── the Sapphic metre = the carrier clock (long=2, short=1 units) ──
+  var HEN=[2,1,2,2,2,1,1,2,1,2,2], ADO=[2,1,1,2,2];
+  var METRE=HEN.concat(HEN,HEN,ADO);            // 38 syllable-slots
+  var BREATH={11:1,22:1,33:1};                   // line-ends → a breath
+
+  // ── Web Audio · Karplus–Strong pluck (from sounds-of-lesbos) ──
+  var ctx=null, master=null;
+  function init(){ if(ctx) return; ctx=new (window.AudioContext||window.webkitAudioContext)();
+    master=ctx.createGain(); master.gain.value=0.8;
+    var conv=ctx.createConvolver(), rate=ctx.sampleRate, len=Math.floor(rate*1.6), ir=ctx.createBuffer(2,len,rate);
+    for(var c=0;c<2;c++){ var d=ir.getChannelData(c); for(var i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.8); }
+    conv.buffer=ir; var wet=ctx.createGain(); wet.gain.value=0.20; var dry=ctx.createGain(); dry.gain.value=0.92;
+    master.connect(dry).connect(ctx.destination); master.connect(conv); conv.connect(wet).connect(ctx.destination); }
+  function resume(){ if(ctx&&ctx.state==="suspended") ctx.resume(); }
+  function pluck(freq,t,dur,gain){ gain=gain||0.55; var rate=ctx.sampleRate, N=Math.max(2,Math.round(rate/freq)),
+      L=Math.max(N+4,Math.floor(rate*dur)), buf=ctx.createBuffer(1,L,rate), d=buf.getChannelData(0);
+    for(var i=0;i<N;i++) d[i]=Math.random()*2-1; var dec=0.9965;
+    for(i=N;i<L;i++) d[i]=dec*0.5*(d[i-N]+d[i-N+1]);
+    var s=ctx.createBufferSource(); s.buffer=buf; var g=ctx.createGain();
+    g.gain.setValueAtTime(gain,t); g.gain.exponentialRampToValueAtTime(0.0006,t+dur);
+    s.connect(g).connect(master); s.start(t); s.stop(t+dur+0.02); }
+
+  // ── the optical carrier · light pulses down a fibre (OOK + WDM) ──
+  var cv=document.getElementById("optic"), g=cv.getContext("2d"), CW=700, CH=230;
+  var pulses=[], carrierPhase=0, TRAVEL_MS=1800;
+  function fit(){ CW=cv.width=cv.clientWidth||700; CH=cv.height=230; }
+  function spawnPulse(cx){
+    pulses.push({ t0:performance.now(), cx:cx, bits:bits(cx.dir,cx.gate), col:GATES[cx.gate].color,
+      glyph:DIRS[cx.dir].glyph+GATES[cx.gate].glyph, witness:cx.witness }); }
+  function fibreY(){ return CH*0.50; }
+  function drawOptic(){
+    g.fillStyle="#0d0716"; g.fillRect(0,0,CW,CH);
+    var y=fibreY(), txX=0.10*CW, rxX=0.90*CW;
+    // the fibre
+    g.strokeStyle="rgba(154,152,166,0.25)"; g.lineWidth=2; g.beginPath(); g.moveTo(txX,y); g.lineTo(rxX,y); g.stroke();
+    // faint carrier sine along the fibre (the fixed 3-2-1-0 carrier 'music')
+    g.strokeStyle="rgba(115,179,163,0.20)"; g.lineWidth=1; g.beginPath();
+    for(var x=txX;x<=rxX;x+=3){ var yy=y+Math.sin(x*0.08 - carrierPhase)*6; (x===txX)?g.moveTo(x,yy):g.lineTo(x,yy); } g.stroke();
+    carrierPhase+=0.12;
+    // endpoints
+    g.font="11px 'IBM Plex Mono',monospace"; g.textBaseline="middle";
+    g.fillStyle="#d9a441"; g.textAlign="center"; g.fillText("TX ⟢ lyre", txX, y-CH*0.40); g.fillText("♪", txX, y);
+    g.fillStyle="#73b3a3"; g.fillText("⟣ RX", rxX, y-CH*0.40); g.fillText("▤", rxX, y);
+    // pulses — position from elapsed time, so travel is frame-rate independent
+    var now=performance.now();
+    for(var i=pulses.length-1;i>=0;i--){ var p=pulses[i];
+      var prog=(now-p.t0)/TRAVEL_MS; var px=txX+Math.min(1.15,prog)*(rxX-txX);
+      // glow blob
+      var grd=g.createRadialGradient(px,y,0,px,y,16); grd.addColorStop(0,p.col); grd.addColorStop(1,"rgba(0,0,0,0)");
+      g.fillStyle=grd; g.beginPath(); g.arc(px,y,16,0,6.283); g.fill();
+      // the OOK bitstream rendered as lit/dark ticks above the blob
+      var bw=2.4, bx=px-(p.bits.length*bw)/2;
+      for(var b=0;b<p.bits.length;b++){ g.fillStyle = p.bits[b]==="1"? p.col : "rgba(154,152,166,0.18)";
+        g.fillRect(bx+b*bw, y-34, bw-0.6, 9); }
+      // witness label below
+      g.fillStyle="rgba(233,226,210,0.85)"; g.font="11px 'IBM Plex Mono',monospace"; g.textAlign="center";
+      g.fillText(p.glyph+"«"+p.witness+"»", px, y+24);
+      if(prog>1.18) pulses.splice(i,1);
+    }
+    requestAnimationFrame(drawOptic);
+  }
+
+  // ── receiver · reconstruct + checksum (from limen.py exchange_line) ──
+  var rxlog=document.getElementById("rxlog"), rxStarted=false;
+  function receive(cx){
+    if(!rxStarted){ rxlog.innerHTML=""; rxStarted=true; }
+    var heard=hear(voice(cx.dir,cx.gate));
+    var ok = (heard.dir===cx.dir && heard.gate===cx.gate);
+    var row=document.createElement("div"); row.className="crossing";
+    var wl=GATES[heard.gate].color;
+    row.innerHTML='<span class="gl" style="color:'+GATES[heard.gate].color+'">'+DIRS[heard.dir].glyph+GATES[heard.gate].glyph+'</span>'
+      +'«'+escapeHtml(cx.witness)+'» '
+      +'<span class="wl">'+heard.gate+' · '+GATES[heard.gate].tone+'Hz · '+GATES[heard.gate].gate+' gate</span> '
+      +(ok?'<span class="ok">✓ checksum</span>':'<span class="bad">✗ tamper</span>');
+    rxlog.appendChild(row);
+  }
+  function escapeHtml(s){ return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
+
+  // ── line + stave rendering ──
+  var lineEl=document.getElementById("line"), staveEl=document.getElementById("stave");
+  var crossings=[], wordSpans=[];
+  function renderLine(){
+    lineEl.innerHTML=""; wordSpans=[];
+    crossings.forEach(function(cx){ var s=document.createElement("span"); s.className="w";
+      s.style.color=GATES[cx.gate].color;
+      s.textContent=DIRS[cx.dir].glyph+GATES[cx.gate].glyph+"«"+cx.witness+"»";
+      lineEl.appendChild(s); lineEl.appendChild(document.createTextNode(" ")); wordSpans.push(s); });
+  }
+  function renderStave(activeSlot){
+    var html=""; for(var s=0;s<METRE.length;s++){ var mark=METRE[s]===2?"–":"‿";
+      html+='<span class="syl'+(s===activeSlot?' on':'')+'">'+mark+'</span>'+(BREATH[s+1]?' &nbsp; ':' ');
+    } staveEl.innerHTML=html;
+  }
+
+  // ── transmit ──
+  var sendBtn=document.getElementById("send");
+  function compile(){ crossings=encode(document.getElementById("msg").value||""); renderLine(); renderStave(-1);
+    buildLegend(); }
+  function transmit(){
+    compile(); if(!crossings.length) return;
+    init(); resume();
+    sendBtn.classList.add("busy"); rxStarted=false;
+    var tempo=parseInt(document.getElementById("tempo").value,10);
+    var unit=(60/tempo)*0.30;                 // a 'short' syllable duration, scaled by tempo
+    var t0=ctx.currentTime+0.10, t=t0, slot=0, totalMs=0;
+    crossings.forEach(function(cx,i){
+      var L=METRE[slot%METRE.length], sd=unit*L;
+      var fr=voice(cx.dir,cx.gate);
+      // pluck the gate's voice-triad inside the slot (rising/falling contour = direction)
+      fr.forEach(function(f,k){ pluck(f, t+k*unit*0.34, sd*1.25, k===0?0.6:0.42); });
+      var delay=(t-t0)*1000;
+      (function(idx,sl){ setTimeout(function(){ flash(idx); renderStave(sl%METRE.length); spawnPulse(crossings[idx]); }, delay); })(i,slot);
+      // reception is scheduled (not tied to the visual RAF) so it is reliable: TX time + fibre travel
+      (function(idx){ setTimeout(function(){ receive(crossings[idx]); }, delay+TRAVEL_MS); })(i);
+      t+=sd; slot++; if(BREATH[slot%METRE.length]) t+=unit*1.3;
+      totalMs=(t-t0)*1000;
+    });
+    setTimeout(function(){ sendBtn.classList.remove("busy"); renderStave(-1); clearFlash(); }, totalMs+TRAVEL_MS+900);
+  }
+  function flash(i){ wordSpans.forEach(function(s,k){ s.classList.toggle("lit",k===i); }); }
+  function clearFlash(){ wordSpans.forEach(function(s){ s.classList.remove("lit"); }); }
+
+  function buildLegend(){
+    var lg=document.getElementById("legend"); lg.innerHTML="";
+    GATE_KEYS.forEach(function(n){ var G=GATES[n]; var e=document.createElement("span"); e.className="g";
+      e.innerHTML='<span class="sw" style="background:'+G.color+'"></span>'+G.glyph+' '+n+' · '+G.tone+'Hz';
+      lg.appendChild(e); }); }
+
+  document.getElementById("send").addEventListener("click",transmit);
+  document.getElementById("clear").addEventListener("click",function(){ document.getElementById("msg").value=""; compile();
+    rxlog.innerHTML='<div class="empty">— nothing received yet. press transmit. —</div>'; rxStarted=false; });
+  document.getElementById("msg").addEventListener("input",compile);
+  window.addEventListener("resize",fit);
+
+  fit(); compile(); requestAnimationFrame(drawOptic);
+})();
+</script>
+</body>
+</html>
